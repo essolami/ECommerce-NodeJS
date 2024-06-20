@@ -5,5 +5,5 @@ export function isAuth(req: Request, res: Response, next: NextFunction) {
     next();
     return;
   }
-  return res.send("Ma3ndna mandiro lik u should logged in");
+  return res.redirect("/products?admin=true");
 }

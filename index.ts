@@ -1,13 +1,16 @@
 import express from "express";
-import "dotenv/config";
-import { isAuth } from "./middlewares";
-import userRouter from "./routes/users";
+import morgan from "morgan";
+import productRouter from "./routes/products";
 import mongoose from "mongoose";
+import "dotenv/config";
+// import { isAuth } from "./middlewares";
+// app.use(isAuth);
 
 const app = express();
-app.use(isAuth);
+app.use(express.json());
 
-app.use("/users", userRouter);
+app.use(morgan("tiny"));
+app.use("/products", productRouter);
 
 // MongoDB connection
 const mongodbURL = process.env.MONGODB_URL;
