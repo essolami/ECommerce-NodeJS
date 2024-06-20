@@ -128,6 +128,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-Email - [essolamih@gmail.com](mailto:your.email@example.com)
+Email - [essolamih@gmail.com](mailto:essolamih@gmail.com)
 
-GitHub: [https://github.com/essolami](https://github.com/yourusername)
+GitHub: [https://github.com/essolami](https://github.com/essolami)
