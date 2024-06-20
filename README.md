@@ -118,14 +118,6 @@ ecommerce-api/
 └── README.md
 ```
 
-## Contributing
-
-Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) first.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Contact
 
 Email - [essolamih@gmail.com](mailto:essolamih@gmail.com)
