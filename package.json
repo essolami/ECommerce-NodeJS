@@ -1,0 +1,32 @@
+{
+  "name": "essolami-commerce",
+  "version": "1.0.0",
+  "description": "first complete node js app for me",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/essolami/e-commerce.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/essolami/e-commerce/issues"
+  },
+  "homepage": "https://github.com/essolami/e-commerce#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.3"
+  },
+  "devDependencies": {
+    "@types/express": "github:types/express",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
