@@ -1,13 +1,15 @@
-import express from "express";
+import express, { urlencoded } from "express";
 import morgan from "morgan";
 import productRouter from "./routes/products";
 import mongoose from "mongoose";
 import "dotenv/config";
+
 // import { isAuth } from "./middlewares";
 // app.use(isAuth);
 
 const app = express();
 app.use(express.json());
+app.use(urlencoded({ extended: false }));
 
 app.use(morgan("tiny"));
 app.use("/products", productRouter);

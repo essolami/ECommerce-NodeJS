@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express, { json, Request, Response } from "express";
+import Product from "../models/productSchema";
 
 const productRouter = express.Router();
 
@@ -16,25 +17,32 @@ const products = [
 ];
 
 // Route to handle POST requests to add a new product
-productRouter.post("/", (req: Request, res: Response) => {
-  console.log("Received POST request to add a product");
-  if (req["body"]) {
-    products.push(req["body"]);
-    // Send a response
-    return res.json(products);
+productRouter.post("/", async (req: Request, res: Response) => {
+  const { price, product_description, product_name } = req["body"];
+  if (price && product_description && product_name) {
+    const newProduct = new Product({
+      product_name,
+      price,
+      product_description,
+    });
+    const createdBook = await newProduct.save();
+    res.send(201).json(createdBook);
   }
-  return res.send("Nothing changed a bro");
+
+  // return res.send("Nothing changed a bro");
 });
 
 // Route to handle GET requests to fetch all products
-productRouter.get("/", (req: Request, res: Response) => {
-  res.json(products);
+productRouter.get("/", async (req: Request, res: Response) => {
+  const products = await Product.find({});
+  return res.status(200).json({ count: products.length, data: products });
 });
 
 //Get single product
-productRouter.get("/:id", (req: Request, res: Response) => {
+productRouter.get("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-  if (id) return res.send(products.find((prod) => prod.id == id));
+  const product = await Product.findById(id);
+  if (id) return res.send(201).json(product);
 });
 
 // update product
