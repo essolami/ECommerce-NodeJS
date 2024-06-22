@@ -6,30 +6,23 @@ import {
   getAllProducts,
   updateProductById,
   deleteProductById,
-  validateProductId,
-  validateProductCreation,
 } from "../controllers/productController";
 
 const productRouter = express.Router();
 
 // Get single product
-productRouter.get("/:id", validateProductId, getProductById);
+productRouter.get("/:id", getProductById);
 
 // Create a new product
-productRouter.post("/", validateProductCreation, createProduct);
+productRouter.post("/", createProduct);
 
 // Get all products
 productRouter.get("/", getAllProducts);
 
 // Update product by ID
-productRouter.put(
-  "/:id",
-  validateProductId,
-  validateProductCreation,
-  updateProductById
-);
+productRouter.put("/:id", updateProductById);
 
 // Delete product by ID
-productRouter.delete("/:id", validateProductId, deleteProductById);
+productRouter.delete("/:id", deleteProductById);
 
 export default productRouter;

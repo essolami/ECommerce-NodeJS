@@ -1,23 +1,38 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface IProduct {
-  product_name: string;
-  product_description: string;
-  price: number;
-  [key: string]: any;
+  name: string;
+  description: string;
+  richDescription?: string;
+  image?: string;
+  images?: string[];
+  countInStock: number;
 }
 
 const productSchema: Schema<IProduct> = new Schema(
   {
-    product_name: {
+    name: {
       type: String,
       required: true,
     },
-    product_description: {
+    description: {
       type: String,
       required: true,
     },
-    price: {
+    richDescription: {
+      type: String,
+      default: "",
+    },
+    image: {
+      type: String,
+      default: "",
+    },
+    images: [
+      {
+        type: String,
+      },
+    ],
+    countInStock: {
       type: Number,
       required: true,
     },

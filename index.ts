@@ -1,15 +1,26 @@
 import express, { urlencoded } from "express";
 import morgan from "morgan";
-import productRouter from "./routes/products";
 import mongoose from "mongoose";
 import "dotenv/config";
+import productRouter from "./routes/products";
+// import categoriesRoutes from "./routes/categories";
+import usersRouter from "./routes/users";
+// import ordersRoutes from "./routes/orders";
 
+// initialisation of express
 const app = express();
+
+//middleware
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
-
 app.use(morgan("tiny"));
-app.use("/products", productRouter);
+
+//Routes
+const api = process.env.API_URL;
+app.use(`/${api}/products`, productRouter);
+// app.use(`/${api}/categories`,categoriesRoutes);
+app.use(`/${api}/users`, usersRouter);
+// app.use(`/${api}/orders`,ordersRoutes);
 
 // MongoDB connection
 const mongodbURL = process.env.MONGODB_URL;
@@ -25,8 +36,8 @@ mongoose
     console.log("Mongo DB Connection Error", error);
   });
 
+// Server running
 const serverPort = process.env.PORT || 3000;
-
 app.listen(serverPort, () => {
   console.log("Connected to port 3000");
 });
