@@ -4,7 +4,7 @@ export interface IProduct {
   product_name: string;
   product_description: string;
   price: number;
-  [key: string]: any; // Allow for additional properties
+  [key: string]: any;
 }
 
 const productSchema: Schema<IProduct> = new Schema(
@@ -24,7 +24,7 @@ const productSchema: Schema<IProduct> = new Schema(
   },
   {
     timestamps: true,
-    strict: false, // Allow fields not defined in the schema to be saved
+    strict: false,
   }
 );
 
