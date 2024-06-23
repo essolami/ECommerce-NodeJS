@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Product, { IProduct } from "../models/productSchema";
+
 import mongoose, { Error } from "mongoose";
 
 const getAllProducts = async (req: Request, res: Response) => {
@@ -43,13 +44,9 @@ const createProduct = async (req: Request, res: Response) => {
     .catch((errors: Error) => res.status(400).json(`${errors.message}`));
 };
 
-const checkId = async (req, res, next, value) => {
+export const checkId = (req, res, next, value) => {
   if (!mongoose.Types.ObjectId.isValid(value)) {
-    throw new Error("Invalid ID format");
-  }
-  const product = await Product.findById(value, { $set: req.body });
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
+    return res.status(400).json("Invalidate ID");
   }
   next();
 };
@@ -58,39 +55,33 @@ const checkId = async (req, res, next, value) => {
 
 const getProductById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Invalid ID format");
-  }
   const product = await Product.findById(id);
   if (!product) {
     return res.status(404).json({ message: "Product not found" });
   }
-
   return res.status(200).json(product);
 };
 
 const updateProductById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new Error("Invalid ID format");
-  }
-  const product = await Product.findById(id, { $set: req.body });
+  const product = await Product.findByIdAndUpdate(id, { $set: req.body });
   if (!product) {
     return res.status(404).json({ message: "Product not found" });
   }
-
-  const updatedProduct = await Product.updateOne({ _id: id, $set: req.body });
   return res
     .status(200)
-    .json({ message: "Updated successfully", data: updatedProduct });
+    .json({ message: "Updated successfully", data: product });
 };
 
 const deleteProductById = async (req: Request, res: Response) => {
-  const deletedProduct = await Product.deleteOne({ _id: id });
-
+  const { id } = req.params;
+  const product = await Product.findByIdAndDelete(id);
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
   return res
     .status(200)
-    .json({ message: "Deleted successfully", data: deletedProduct });
+    .json({ message: "Deleted successfully", data: product });
 };
 
 export {
