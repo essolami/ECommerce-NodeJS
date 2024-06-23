@@ -6,7 +6,12 @@ export interface IProduct {
   richDescription?: string;
   image?: string;
   images?: string[];
+  price?: number;
+  category: mongoose.Schema.Types.ObjectId;
   countInStock: number;
+  rating?: number;
+  numReviews?: number;
+  isFeatured?: boolean;
 }
 
 const productSchema: Schema<IProduct> = new Schema(
@@ -32,9 +37,32 @@ const productSchema: Schema<IProduct> = new Schema(
         type: String,
       },
     ],
+    price: {
+      type: Number,
+      default: 0,
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "category",
+      required: true,
+    },
     countInStock: {
       type: Number,
       required: true,
+      min: 0,
+      max: 255,
+    },
+    rating: {
+      type: Number,
+      default: 0,
+    },
+    numReviews: {
+      type: Number,
+      default: 0,
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false,
     },
   },
   {
