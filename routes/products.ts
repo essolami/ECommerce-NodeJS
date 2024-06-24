@@ -1,5 +1,4 @@
 import express from "express";
-
 import {
   getProductById,
   createProduct,
@@ -15,8 +14,8 @@ productRouter.param("id", checkId);
 productRouter.route("/").get(getAllProducts).post(createProduct);
 productRouter
   .route("/:id")
-  .get(updateProductById)
-  .post(deleteProductById)
-  .get(getProductById);
+  .get(getProductById)
+  .put(updateProductById)
+  .delete(deleteProductById);
 
 export default productRouter;

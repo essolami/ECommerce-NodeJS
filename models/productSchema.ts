@@ -1,18 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-
-export interface IProduct {
-  name: string;
-  description: string;
-  richDescription?: string;
-  image?: string;
-  images?: string[];
-  price?: number;
-  category: mongoose.Schema.Types.ObjectId;
-  countInStock: number;
-  rating?: number;
-  numReviews?: number;
-  isFeatured?: boolean;
-}
+import { IProduct } from "../types/products";
 
 const productSchema: Schema<IProduct> = new Schema(
   {

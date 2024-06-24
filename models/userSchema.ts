@@ -1,10 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-
-export interface IUser {
-  name?: string;
-  image?: string;
-  countInStock: number;
-}
+import { IUser } from "../types/users";
 
 const userSchema: Schema<IUser> = new mongoose.Schema({
   name: String,

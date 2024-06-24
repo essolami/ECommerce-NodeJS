@@ -1,86 +1,87 @@
-import { Request, Response } from "express";
-import Product, { IProduct } from "../models/productSchema";
-import mongoose, { Error } from "mongoose";
+import { NextFunction, Response } from "express";
+import Product from "../models/productSchema";
+import { IProduct } from "../types/products";
+import mongoose from "mongoose";
+import { CustomRequest } from "../types/common";
 
-const getAllProducts = async (req: Request, res: Response) => {
-  const allProducts: IProduct[] = await Product.find();
-  if (!allProducts) {
-    return res.status(500).json({ success: false });
-  }
-  res.status(200).json(allProducts);
-};
-
-const createProduct = async (req: Request, res: Response) => {
-  const {
-    name,
-    countInStock,
-    category,
-    price,
-    description,
-    image,
-    images,
-    richDescription,
-    isFeatured,
-    numReviews,
-    rating,
-  } = req.body;
-  const newProduct = new Product({
-    name,
-    countInStock,
-    description,
-    image,
-    images,
-    richDescription,
-    category,
-    price,
-    isFeatured,
-    numReviews,
-    rating,
-  });
-  newProduct
-    .save()
-    .then((createdProduct: IProduct) => res.status(201).json(createdProduct))
-    .catch((errors: Error) => res.status(400).json(`${errors.message}`));
-};
-
-export const checkId = (req, res, next, value) => {
+const checkId = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+  value: string
+) => {
   if (!mongoose.Types.ObjectId.isValid(value)) {
-    return res.status(400).json("Invalidate ID");
+    return res.status(400).json({ message: "Invalid ID format" });
   }
+  const product = await Product.findById(value);
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+  req.product = product;
   next();
 };
 
-// question : how to implement the param middleware for mongoDb
-
-const getProductById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const product = await Product.findById(id);
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
+// Get all Products route
+const getAllProducts = async (_: CustomRequest, res: Response) => {
+  try {
+    const allProducts: IProduct[] = await Product.find();
+    return res
+      .status(200)
+      .json({ count: allProducts.length, data: allProducts });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error });
   }
-  return res.status(200).json(product);
 };
 
-const updateProductById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const product = await Product.findByIdAndUpdate(id, { $set: req.body });
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
+// Add new Product route
+const createProduct = async (req: CustomRequest, res: Response) => {
+  try {
+    const newProduct = new Product(req.body);
+    const createdProduct: IProduct = await newProduct.save();
+    return res.status(201).json(createdProduct);
+  } catch (error) {
+    return res.status(400).json({ message: "Error creating product", error });
   }
-  return res
-    .status(200)
-    .json({ message: "Updated successfully", data: product });
 };
 
-const deleteProductById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const product = await Product.findByIdAndDelete(id);
-  if (!product) {
-    return res.status(404).json({ message: "Product not found" });
+// Get Product by ID route
+const getProductById = (req: CustomRequest, res: Response) => {
+  if (!req.product) {
+    return res.status(500).json({ message: "Internal server error" });
   }
-  return res
-    .status(200)
-    .json({ message: "Deleted successfully", data: product });
+  return res.status(200).json({ message: "Product by ID", data: req.product });
+};
+
+// Update Product route
+const updateProductById = async (req: CustomRequest, res: Response) => {
+  if (!req.product) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.product.id,
+      { $set: req.body },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "Updated successfully", data: updatedProduct });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Delete Product route
+const deleteProductById = async (req: CustomRequest, res: Response) => {
+  if (!req.product) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+  try {
+    await Product.findByIdAndDelete(req.product.id);
+    return res.status(200).json({ message: "Deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error });
+  }
 };
 
 export {
@@ -89,4 +90,5 @@ export {
   getAllProducts,
   updateProductById,
   deleteProductById,
+  checkId,
 };

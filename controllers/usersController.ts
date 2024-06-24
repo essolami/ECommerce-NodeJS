@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import User, { IUser } from "../models/userSchema";
+import User from "../models/userSchema";
+import { IUser } from "../types/users";
 
 const getAllUsers = async (req: Request, res: Response) => {
   const allUsers: IUser[] = await User.find();
@@ -10,12 +11,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 };
 
 const createUser = async (req: Request, res: Response) => {
-  const { name, image, countInStock } = req.body;
-  const newUser = new User({
-    name,
-    image,
-    countInStock,
-  });
+  const newUser = new User(req.body);
   newUser
     .save()
     .then((createdUser: IUser) => res.status(201).json(createdUser))
