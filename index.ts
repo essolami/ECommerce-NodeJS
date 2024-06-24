@@ -13,7 +13,10 @@ const app = express();
 //middleware
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
-app.use(morgan("tiny"));
+app.use(express.static(`${__dirname}/public`));
+if (process.env.NODE_ENV === "developent") {
+  app.use(morgan("dev"));
+}
 
 //Routes
 const api = process.env.API_URL;

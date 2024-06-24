@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Product, { IProduct } from "../models/productSchema";
-
 import mongoose, { Error } from "mongoose";
 
 const getAllProducts = async (req: Request, res: Response) => {
