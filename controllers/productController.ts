@@ -19,12 +19,11 @@ const checkId = async (
 const getAllProducts = async (_: Request, res: Response) => {
   await Product.find()
     .then((products) => {
+      if (!products) throw new Error("Cannot fetch products");
       return res.status(200).json({ count: products.length, data: products });
     })
     .catch((error) => {
-      return res
-        .status(404)
-        .json({ message: "There is error on the server", error });
+      return res.status(404).json({ error });
     });
 };
 
@@ -33,10 +32,11 @@ const createProduct = async (req: Request, res: Response) => {
   new Product(req.body)
     .save()
     .then((product: IProduct) => {
+      if (!product) throw new Error("Cannot created this product");
       return res.status(201).json(product);
     })
     .catch((error) => {
-      return res.status(400).json({ message: "Error creating product", error });
+      return res.status(404).json({ error });
     });
 };
 
@@ -45,10 +45,11 @@ const getProductById = async (req: Request, res: Response) => {
   const { id } = req.params;
   await Product.findById(id)
     .then((product) => {
+      if (!product) throw new Error("Product not found");
       return res.status(200).json({ message: "Product by ID", data: product });
     })
     .catch((error) => {
-      return res.status(400).json({ message: "Error creating product", error });
+      return res.status(404).json({ message: error.message || error });
     });
 };
 
@@ -57,14 +58,13 @@ const updateProductById = async (req: Request, res: Response) => {
   const { id } = req.params;
   await Product.findByIdAndUpdate(id, { $set: req.body }, { new: true })
     .then((updatedProduct) => {
+      if (!updatedProduct) throw new Error("Product not found");
       return res
         .status(200)
         .json({ message: "Updated successfully", data: updatedProduct });
     })
     .catch((error) => {
-      return res
-        .status(404)
-        .json({ message: "There is error on the server", error });
+      return res.status(404).json({ message: error.message || error });
     });
 };
 
@@ -72,11 +72,12 @@ const updateProductById = async (req: Request, res: Response) => {
 const deleteProductById = async (req: Request, res: Response) => {
   const { id } = req.params;
   await Product.findByIdAndDelete(id)
-    .then(() => {
+    .then((deletedProduct) => {
+      if (!deletedProduct) throw new Error("Product not found");
       return res.status(200).json({ message: "Deleted successfully" });
     })
-    .catch(() => {
-      return res.status(404).json({ message: "There is error on the server" });
+    .catch((error) => {
+      return res.status(404).json({ message: error.message || error });
     });
 };
 
