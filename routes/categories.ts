@@ -59,12 +59,13 @@ categoryRouter.delete("/:id", (req, res) => {
 // * Update category :
 categoryRouter.put("/:id", async (req, res) => {
   const { id } = req.params;
-  Category.findByIdAndUpdate(id, { $set: req.body })
+  Category.findByIdAndUpdate(id, { $set: req.body }, { new: true })
     .then((category) => {
       if (category) {
         return res.status(200).json({
           success: true,
           message: "the category was updated successufully",
+          data: category,
         });
       } else {
         return res
