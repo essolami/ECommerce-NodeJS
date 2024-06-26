@@ -3,7 +3,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import "dotenv/config";
 import productRouter from "./routes/products";
-// import categoriesRoutes from "./routes/categories";
+import categoryRouter from "./routes/categories";
 import usersRouter from "./routes/users";
 // import ordersRoutes from "./routes/orders";
 
@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "developent") {
 //Routes
 const api = process.env.API_URL;
 app.use(`/${api}/products`, productRouter);
-// app.use(`/${api}/categories`,categoriesRoutes);
+app.use(`/${api}/categories`, categoryRouter);
 app.use(`/${api}/users`, usersRouter);
 // app.use(`/${api}/orders`,ordersRoutes);
 

@@ -12,4 +12,5 @@ export interface IProduct {
   numReviews?: number;
   isFeatured?: boolean;
   richDescription?: string;
+  dateCreated?: Date;
 }
