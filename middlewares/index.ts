@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from "express";
+import mongoose from "mongoose";
 
-export function isAuth(req: Request, res: Response, next: NextFunction) {
-  if (req.query?.admin === "true") {
-    next();
-    return;
+export const checkId = async (
+  _: Request,
+  res: Response,
+  next: NextFunction,
+  value: string
+) => {
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    return res.status(400).json({ message: "Invalid ID format" });
   }
-  return res.redirect("/products?admin=true");
-}
+  next();
+};

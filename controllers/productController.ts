@@ -1,19 +1,6 @@
-import { NextFunction, Response, Request } from "express";
+import { Response, Request } from "express";
 import Product from "../models/productSchema";
 import { IProduct } from "../types/products";
-import mongoose from "mongoose";
-
-const checkId = async (
-  _: Request,
-  res: Response,
-  next: NextFunction,
-  value: string
-) => {
-  if (!mongoose.Types.ObjectId.isValid(value)) {
-    return res.status(400).json({ message: "Invalid ID format" });
-  }
-  next();
-};
 
 // Get all Products route
 const getAllProducts = async (_: Request, res: Response) => {
@@ -88,5 +75,4 @@ export {
   getAllProducts,
   updateProductById,
   deleteProductById,
-  checkId,
 };

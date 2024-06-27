@@ -5,8 +5,8 @@ import {
   getAllProducts,
   updateProductById,
   deleteProductById,
-  checkId,
 } from "../controllers/productController";
+import { checkId } from "../middlewares";
 
 const productRouter = express.Router();
 

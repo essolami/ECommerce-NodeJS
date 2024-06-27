@@ -3,18 +3,6 @@ import User from "../models/userSchema";
 import { IUser } from "../types/users";
 import mongoose from "mongoose";
 
-const checkId = async (
-  _: Request,
-  res: Response,
-  next: NextFunction,
-  value: string
-) => {
-  if (!mongoose.Types.ObjectId.isValid(value)) {
-    return res.status(400).json({ message: "Invalid ID format" });
-  }
-  next();
-};
-
 const getAllUsers = async (req: Request, res: Response) => {
   const userList: IUser[] = await User.find().select("-__v");
   if (!userList) {
@@ -72,11 +60,4 @@ const deleteUserById = async (req: Request, res: Response) => {
     });
 };
 
-export {
-  getAllUsers,
-  createUser,
-  getUserById,
-  updateUserById,
-  deleteUserById,
-  checkId,
-};
+export { getAllUsers, createUser, getUserById, updateUserById, deleteUserById };

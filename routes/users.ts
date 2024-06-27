@@ -1,12 +1,12 @@
 import express from "express";
 import {
-  checkId,
   createUser,
   deleteUserById,
   getAllUsers,
   getUserById,
   updateUserById,
 } from "../controllers/usersController";
+import { checkId } from "../middlewares";
 
 const userRouter = express.Router();
 
