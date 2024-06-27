@@ -5,7 +5,7 @@ const categoryRouter = express.Router();
 
 // * Get all categories :
 categoryRouter.get("/", async (req, res) => {
-  const categoryList = await Category.find().select("name icon -_id");
+  const categoryList = await Category.find().select("name icon");
 
   if (!categoryList) {
     res.status(500).json({ success: false });

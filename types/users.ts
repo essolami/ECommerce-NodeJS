@@ -1,5 +1,12 @@
 export interface IUser {
-  name?: string;
-  image?: string;
-  countInStock: number;
+  id?: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  phone: string;
+  isAdmin?: boolean;
+  street?: string;
+  apartement?: string;
+  zip?: string;
+  country?: string;
 }

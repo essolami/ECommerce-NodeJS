@@ -18,6 +18,7 @@ const checkId = async (
 // Get all Products route
 const getAllProducts = async (_: Request, res: Response) => {
   await Product.find()
+    .populate("category")
     .then((products) => {
       if (!products) throw new Error("Cannot fetch products");
       return res.status(200).json({ count: products.length, data: products });
