@@ -6,6 +6,7 @@ import productRouter from "./routes/products";
 import categoryRouter from "./routes/categories";
 import usersRouter from "./routes/users";
 import { authJwt, handleAuthErrors } from "./helpers/jwt"; // Updated import
+import errorHandler from "./helpers/error-handler";
 
 // Initialisation of express
 const app = express();
@@ -20,7 +21,7 @@ if (process.env.NODE_ENV === "development") {
 
 // JWT Authentication Middleware
 app.use(authJwt());
-
+app.use(errorHandler);
 // Routes
 const api = process.env.API_URL;
 app.use(`/${api}/products`, productRouter);
@@ -40,18 +41,6 @@ mongoose
   .catch((error) => {
     console.error("MongoDB Connection Error:", error);
   });
-
-// Error handling middleware for auth errors
-app.use(handleAuthErrors);
-
-// Global Error Handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error("Unhandled Error:", err);
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
-});
 
 // 404 Error Handler
 app.use((req: Request, res: Response) => {

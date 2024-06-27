@@ -3,16 +3,15 @@ import { Response, NextFunction } from "express";
 
 function authJwt() {
   const secret = process.env.SECRET as string;
+  const api = process.env.API_URL;
   return expressjwt({
     secret,
     algorithms: ["HS256"],
   }).unless({
-    // Define paths that should not require authentication here
     path: [
-      // { url: /\/api\/v1\/products(.*)/, methods: ['GET', 'OPTIONS'] },
-      // { url: /\/api\/v1\/categories(.*)/, methods: ['GET', 'OPTIONS'] },
-      // { url: /\/api\/v1\/users\/login/ },
-      // { url: /\/api\/v1\/users\/register/ }
+      { url: /\API_V1\/products(.*)/, methods: ["GET"] },
+      { url: /\API_V1\/categories(.*)/, methods: ["GET"] },
+      `/${api}/users/login`,
     ],
   });
 }
