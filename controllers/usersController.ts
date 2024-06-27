@@ -66,7 +66,7 @@ const deleteUserById = async (req: Request, res: Response) => {
 };
 
 const loginUser = async (req: Request, res: Response) => {
-  const user = await User.findOne({ email: req.body.email });
+  const user: IUser | null = await User.findOne({ email: req.body.email });
   const secret = `${process.env.SECRET}`;
   if (!user) {
     return res.status(404).send("User not found");
@@ -76,6 +76,7 @@ const loginUser = async (req: Request, res: Response) => {
     const token = jwt.sign(
       {
         userId: user.id,
+        isAdmin: user.isAdmin,
       },
       secret,
       {

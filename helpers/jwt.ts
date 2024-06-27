@@ -1,5 +1,7 @@
 import { expressjwt, Request as JWTRequest } from "express-jwt";
-import { Response, NextFunction } from "express";
+import { Response, NextFunction, Request } from "express";
+import { IUser } from "../types/users";
+import jwt from "jsonwebtoken";
 
 function authJwt() {
   const secret = process.env.SECRET as string;
@@ -7,27 +9,27 @@ function authJwt() {
   return expressjwt({
     secret,
     algorithms: ["HS256"],
+    isRevoked: isRevoked,
   }).unless({
     path: [
-      { url: /\API_V1\/products(.*)/, methods: ["GET"] },
-      { url: /\API_V1\/categories(.*)/, methods: ["GET"] },
+      { url: new RegExp(`^/${api}/products(.*)`), methods: ["GET", "OPTIONS"] },
+      {
+        url: new RegExp(`^/${api}/categories(.*)`),
+        methods: ["GET", "OPTIONS"],
+      },
       `/${api}/users/login`,
     ],
   });
 }
 
-const handleAuthErrors = (
-  err: any,
-  req: JWTRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  if (err.name === "UnauthorizedError") {
-    return res
-      .status(401)
-      .json({ message: "Invalid token or no token provided" });
+async function isRevoked(
+  req: any,
+  token: jwt.Jwt | undefined
+): Promise<boolean> {
+  if (token && !token.payload["isAdmin"]) {
+    return true;
   }
-  next(err);
-};
+  return false;
+}
 
-export { authJwt, handleAuthErrors };
+export { authJwt };

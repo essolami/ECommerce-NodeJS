@@ -5,7 +5,7 @@ import "dotenv/config";
 import productRouter from "./routes/products";
 import categoryRouter from "./routes/categories";
 import usersRouter from "./routes/users";
-import { authJwt, handleAuthErrors } from "./helpers/jwt"; // Updated import
+import { authJwt } from "./helpers/jwt"; // Updated import
 import errorHandler from "./helpers/error-handler";
 
 // Initialisation of express
