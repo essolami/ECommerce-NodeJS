@@ -1,29 +1,31 @@
-import express, { urlencoded } from "express";
+import express, { Request, Response, NextFunction, urlencoded } from "express";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import "dotenv/config";
 import productRouter from "./routes/products";
 import categoryRouter from "./routes/categories";
 import usersRouter from "./routes/users";
-// import ordersRoutes from "./routes/orders";
+import { authJwt, handleAuthErrors } from "./helpers/jwt"; // Updated import
 
-// initialisation of express
+// Initialisation of express
 const app = express();
 
-//middleware
+// Middleware
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
 app.use(express.static(`${__dirname}/public`));
-if (process.env.NODE_ENV === "developent") {
+if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-//Routes
+// JWT Authentication Middleware
+app.use(authJwt());
+
+// Routes
 const api = process.env.API_URL;
 app.use(`/${api}/products`, productRouter);
 app.use(`/${api}/categories`, categoryRouter);
 app.use(`/${api}/users`, usersRouter);
-// app.use(`/${api}/orders`,ordersRoutes);
 
 // MongoDB connection
 const mongodbURL = process.env.MONGODB_URL;
@@ -33,14 +35,31 @@ if (!mongodbURL) {
 mongoose
   .connect(mongodbURL)
   .then(() => {
-    console.log("Mongodb Connected");
+    console.log("MongoDB Connected");
   })
   .catch((error) => {
-    console.log("Mongo DB Connection Error", error);
+    console.error("MongoDB Connection Error:", error);
   });
+
+// Error handling middleware for auth errors
+app.use(handleAuthErrors);
+
+// Global Error Handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error("Unhandled Error:", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+// 404 Error Handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ message: "Not Found" });
+});
 
 // Server running
 const serverPort = process.env.PORT || 3000;
 app.listen(serverPort, () => {
-  console.log("Connected to port 3000");
+  console.log(`Connected to port ${serverPort}`);
 });
