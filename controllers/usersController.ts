@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import User from "../models/userSchema";
 import { IUser } from "../types/users";
-import mongoose from "mongoose";
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const getAllUsers = async (req: Request, res: Response) => {
-  const userList: IUser[] = await User.find().select("-__v");
+  const userList: IUser[] = await User.find().select("-__v -passwordHash");
   if (!userList) {
     return res.status(500).json({ success: false });
   }
@@ -12,7 +13,10 @@ const getAllUsers = async (req: Request, res: Response) => {
 };
 
 const createUser = async (req: Request, res: Response) => {
-  const newUser = new User(req.body);
+  const newUser = new User({
+    passwordHash: bcryptjs.hashSync(req.body.password, 10),
+    ...req.body,
+  });
   newUser
     .save()
     .then((createdUser: IUser) => res.status(201).json(createdUser))
@@ -23,6 +27,7 @@ const createUser = async (req: Request, res: Response) => {
 const getUserById = async (req: Request, res: Response) => {
   const { id } = req.params;
   await User.findById(id)
+    .select("-__v -passwordHash")
     .then((user) => {
       if (!user) throw new Error("User not found");
       return res.status(200).json({ message: "User by ID", data: user });
@@ -60,4 +65,34 @@ const deleteUserById = async (req: Request, res: Response) => {
     });
 };
 
-export { getAllUsers, createUser, getUserById, updateUserById, deleteUserById };
+const loginUser = async (req: Request, res: Response) => {
+  const user = await User.findOne({ email: req.body.email });
+  const secret = `${process.env.SECRET}`;
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
+
+  if (user && bcryptjs.compareSync(req.body.password, user.passwordHash)) {
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      secret,
+      {
+        expiresIn: "1d",
+      }
+    );
+    return res.status(200).send({ user: user.email, token });
+  } else {
+    return res.status(404).send("Password is wrong!");
+  }
+};
+
+export {
+  getAllUsers,
+  createUser,
+  getUserById,
+  updateUserById,
+  deleteUserById,
+  loginUser,
+};

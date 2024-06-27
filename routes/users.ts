@@ -4,15 +4,18 @@ import {
   deleteUserById,
   getAllUsers,
   getUserById,
+  loginUser,
   updateUserById,
 } from "../controllers/usersController";
 import { checkId } from "../middlewares";
 
 const userRouter = express.Router();
 
-userRouter.param("id", checkId);
-
 userRouter.route("/").get(getAllUsers).post(createUser);
+
+userRouter.post("/login", loginUser);
+
+userRouter.param("id", checkId);
 
 userRouter
   .route("/:id")
