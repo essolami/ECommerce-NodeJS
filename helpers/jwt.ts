@@ -1,7 +1,5 @@
 import { expressjwt, Request as JWTRequest } from "express-jwt";
-import { Response, NextFunction, Request } from "express";
-import { IUser } from "../types/users";
-import jwt from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 
 function authJwt() {
   const secret = process.env.SECRET as string;
@@ -24,9 +22,9 @@ function authJwt() {
 
 async function isRevoked(
   req: any,
-  token: jwt.Jwt | undefined
+  token: JwtPayload | undefined
 ): Promise<boolean> {
-  if (token && !token.payload["isAdmin"]) {
+  if (token && !token.payload.isAdmin) {
     return true;
   }
   return false;
