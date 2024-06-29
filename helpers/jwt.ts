@@ -7,14 +7,10 @@ function authJwt() {
   return expressjwt({
     secret,
     algorithms: ["HS256"],
-    isRevoked: isRevoked, // Using the isRevoked function
+    isRevoked: isRevoked,
   }).unless({
     path: [
-      //   { url: new RegExp(`^/${api}/products(.*)`), methods: ["GET", "OPTIONS"] },
-      {
-        url: new RegExp(`^/${api}/users(.*)`),
-        methods: ["GET", "POST", "DELETE"],
-      },
+      { url: new RegExp(`^/${api}/products(.*)`), methods: ["GET", "OPTIONS"] },
       {
         url: new RegExp(`^/${api}/categories(.*)`),
         methods: ["GET", "OPTIONS"],
