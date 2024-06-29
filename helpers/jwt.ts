@@ -25,7 +25,8 @@ async function isRevoked(
   req: any,
   token: JwtPayload | undefined
 ): Promise<boolean> {
-  if (token && token.isAdmin !== undefined && !token.isAdmin) {
+  const isAdmin = await token?.payload.isAdmin;
+  if (token && !isAdmin) {
     return true;
   }
   return false;
