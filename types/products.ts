@@ -6,7 +6,7 @@ export interface IProduct {
   category: mongoose.Schema.Types.ObjectId;
   countInStock: number;
   image?: string;
-  price?: number;
+  price: number;
   rating?: number;
   images?: string[];
   numReviews?: number;

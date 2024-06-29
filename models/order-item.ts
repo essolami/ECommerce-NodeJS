@@ -1,6 +1,10 @@
-import mongoose, { Schema, trusted } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { IProduct } from "../types/products";
 
-export interface IOrderItem {}
+export type IOrderItem = {
+  quantity: number;
+  product: IProduct;
+};
 
 const orderItemSchema: Schema<IOrderItem> = new Schema({
   quantity: {

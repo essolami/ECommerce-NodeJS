@@ -1,4 +1,4 @@
-import OrderItem from "../models/order-item";
+import OrderItem, { IOrderItem } from "../models/order-item";
 import Order from "../models/orderSchema";
 import express from "express";
 
@@ -49,11 +49,12 @@ router.post("/", async (req, res) => {
 
   const totalPrices = await Promise.all(
     orderItemsIdsResolved.map(async (orderItemId) => {
-      const orderItem = await OrderItem.findById(orderItemId).populate(
-        "product",
-        "price"
-      );
-      const totalPrice = orderItem.product.price * orderItem.quantity;
+      const orderItem: IOrderItem | null = await OrderItem.findById(
+        orderItemId
+      ).populate("product", "price");
+      let totalPrice = orderItem
+        ? orderItem.product.price * orderItem.quantity
+        : 0;
       return totalPrice;
     })
   );
@@ -93,12 +94,12 @@ router.put("/:id", async (req, res) => {
   res.send(order);
 });
 
-router.delete("/:id", (req, res) => {
-  Order.findByIdAndRemove(req.params.id)
-    .then(async (order) => {
+router.delete("/:id", async (req, res) => {
+  await Order.findByIdAndDelete(req.params.id)
+    .then(async (order: any) => {
       if (order) {
         await order.orderItems.map(async (orderItem) => {
-          await OrderItem.findByIdAndRemove(orderItem);
+          await OrderItem.findByIdAndDelete(orderItem);
         });
         return res
           .status(200)
