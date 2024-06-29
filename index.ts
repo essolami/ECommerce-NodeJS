@@ -27,7 +27,7 @@ app.use(`/${api}/products`, productRouter);
 app.use(`/${api}/categories`, categoryRouter);
 app.use(`/${api}/users`, usersRouter);
 
-app.use(errorHandler);
+// app.use(errorHandler);
 // MongoDB connection
 const mongodbURL = process.env.MONGODB_URL;
 if (!mongodbURL) {

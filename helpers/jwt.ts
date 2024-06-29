@@ -7,11 +7,14 @@ function authJwt() {
   return expressjwt({
     secret,
     algorithms: ["HS256"],
-    isRevoked,
+    isRevoked: isRevoked, // Using the isRevoked function
   }).unless({
     path: [
-      { url: new RegExp(`^/${api}/products(.*)`), methods: ["GET", "OPTIONS"] },
-      //   { url: new RegExp(`^/${api}/users(.*)`), methods: ["GET", "POST"] },
+      //   { url: new RegExp(`^/${api}/products(.*)`), methods: ["GET", "OPTIONS"] },
+      {
+        url: new RegExp(`^/${api}/users(.*)`),
+        methods: ["GET", "POST", "DELETE"],
+      },
       {
         url: new RegExp(`^/${api}/categories(.*)`),
         methods: ["GET", "OPTIONS"],
@@ -25,8 +28,7 @@ async function isRevoked(
   req: any,
   token: JwtPayload | undefined
 ): Promise<boolean> {
-  const isAdmin = await token?.payload.isAdmin;
-  if (token && !isAdmin) {
+  if (token && !token.payload.isAdmin) {
     return true;
   }
   return false;
