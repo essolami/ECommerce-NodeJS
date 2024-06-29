@@ -7,7 +7,7 @@ function authJwt() {
   return expressjwt({
     secret,
     algorithms: ["HS256"],
-    isRevoked: isRevoked,
+    isRevoked,
   }).unless({
     path: [
       { url: new RegExp(`^/${api}/products(.*)`), methods: ["GET", "OPTIONS"] },
@@ -25,7 +25,7 @@ async function isRevoked(
   req: any,
   token: JwtPayload | undefined
 ): Promise<boolean> {
-  if (token && !token.payload.isAdmin) {
+  if (token && token.isAdmin !== undefined && !token.isAdmin) {
     return true;
   }
   return false;

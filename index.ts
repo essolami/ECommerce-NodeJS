@@ -21,13 +21,13 @@ if (process.env.NODE_ENV === "development") {
 
 // JWT Authentication Middleware
 app.use(authJwt());
-app.use(errorHandler);
 // Routes
 const api = process.env.API_URL;
 app.use(`/${api}/products`, productRouter);
 app.use(`/${api}/categories`, categoryRouter);
 app.use(`/${api}/users`, usersRouter);
 
+app.use(errorHandler);
 // MongoDB connection
 const mongodbURL = process.env.MONGODB_URL;
 if (!mongodbURL) {
