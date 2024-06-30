@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { IProduct } from "../types/products";
 
 export type IOrderItem = {
+  _id?: string;
   quantity: number;
   product: IProduct;
 };

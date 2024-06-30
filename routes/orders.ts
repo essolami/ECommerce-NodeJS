@@ -35,14 +35,12 @@ router.get(`/:id`, async (req, res) => {
 router.post("/", async (req, res) => {
   const orderItemsIds = Promise.all(
     req.body.orderItems.map(async (orderItem) => {
-      let newOrderItem = new orderItem({
+      let newOrderItem = new OrderItem({
         quantity: orderItem.quantity,
         product: orderItem.product,
-      });
+      }).save();
 
-      newOrderItem = await newOrderItem.save();
-
-      return newOrderItem._id;
+      return (await newOrderItem)._id;
     })
   );
   const orderItemsIdsResolved = await orderItemsIds;
@@ -52,9 +50,8 @@ router.post("/", async (req, res) => {
       const orderItem: IOrderItem | null = await OrderItem.findById(
         orderItemId
       ).populate("product", "price");
-      let totalPrice = orderItem
-        ? orderItem.product.price * orderItem.quantity
-        : 0;
+      let totalPrice: any =
+        orderItem && orderItem.product.price * orderItem.quantity;
       return totalPrice;
     })
   );
